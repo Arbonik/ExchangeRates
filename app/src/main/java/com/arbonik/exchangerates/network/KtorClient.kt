@@ -7,6 +7,8 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URL
 
 class KtorClient{
@@ -17,8 +19,10 @@ class KtorClient{
         }
     }
 
-    suspend fun getExchange():LatestRubResponse{
-        val request = client.get(URL("https://open.er-api.com/v6/latest/RUB"))
-        return request.body()
+    suspend fun getExchange(exchangeCode: String):Result<LatestRubResponse> = kotlin.runCatching {
+        val request = withContext(Dispatchers.IO){
+            client.get(URL("https://open.er-api.com/v6/latest/$exchangeCode"))
+        }
+        return Result.success(request.body())
     }
 }

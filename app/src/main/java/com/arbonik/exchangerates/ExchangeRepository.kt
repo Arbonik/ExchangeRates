@@ -2,6 +2,7 @@ package com.arbonik.exchangerates
 
 import com.arbonik.exchangerates.di.ExchangeDao
 import com.arbonik.exchangerates.entities.Exchange
+import com.arbonik.exchangerates.entities.LatestRubResponse
 import com.arbonik.exchangerates.network.KtorClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,11 +13,12 @@ class ExchangeRepository @Inject constructor(
     private val ktorClient: KtorClient,
 //    private val
 ) {
-    suspend fun getExchanges() = withContext(Dispatchers.IO) {
-        ktorClient.getExchange().rates.map { exchange ->
-            Exchange(exchange.key, exchange.value)
+    suspend fun getExchanges(exchangeCode : String) :Result<List<Exchange>> {
+        return ktorClient.getExchange(exchangeCode).map {
+            it.rates.map { exchange ->
+                Exchange(exchange.key, exchange.value)
+            }
         }
     }
-
 
 }
