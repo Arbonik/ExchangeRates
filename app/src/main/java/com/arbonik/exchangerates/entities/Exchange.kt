@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Exchange(
     val name : String,
-    val cost : Double
+    val cost : Double,
+    val isFavorite : Boolean = false
 )
